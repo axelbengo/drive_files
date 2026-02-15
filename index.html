@@ -1,109 +1,64 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drive Manager Pro</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; background-color: #f8f9fa; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h2 { color: #333; margin-top: 0; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
-        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
-        .btn { background: #007bff; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn:disabled { background: #ccc; }
-        .btn-download { background: #28a745; text-decoration: none; font-size: 14px; padding: 5px 10px; border-radius: 4px; color: white; }
-        input[type="file"] { margin-bottom: 10px; }
-        #status { font-weight: bold; margin-top: 10px; }
-    </style>
+<meta charset="UTF-8">
+<title>Drive Public App</title>
+<style>
+body { font-family: Arial; max-width: 600px; margin: auto; }
+button { padding: 8px; margin: 5px 0; }
+</style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>📤 Ajouter un fichier</h2>
-        <input type="file" id="fileInput"><br>
-        <button class="btn" onclick="uploadFile()" id="uploadBtn">Lancer l'upload</button>
-        <div id="status"></div>
-    </div>
+<h2>📁 Documents</h2>
 
-    <div class="card">
-        <h2>📂 Fichiers disponibles</h2>
-        <button class="btn" style="background:#6c757d; margin-bottom:15px;" onclick="loadFiles()">Actualiser</button>
-        <div id="fileList">Chargement...</div>
-    </div>
+<input type="file" id="fileInput">
+<button onclick="upload()">Uploader</button>
 
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZCXEskhiFPcSwVc1HCDp2-wuS7v_eP_zMkzUcapuWtky6cQNIDQfkeemO1y1LeeW3/exec"; // METTRE TON URL ICI
+<ul id="list"></ul>
 
-        // Charger la liste au démarrage
-        window.onload = loadFiles;
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwX1fl3Y4mJT9y2kWlsFrnqL6wbP_-X2soYLtmikPcHOTMRlW1oT5s4-oPx51amsAg8/exec";
 
-        async function loadFiles() {
-            const listDiv = document.getElementById('fileList');
-            listDiv.innerHTML = "<em>Recherche des fichiers...</em>";
-            
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=list`);
-                const data = await response.json();
-                
-                listDiv.innerHTML = "";
-                if(data.length === 0) listDiv.innerHTML = "Aucun fichier trouvé.";
-                
-                data.forEach(file => {
-                    const item = document.createElement('div');
-                    item.className = 'file-item';
-                    item.innerHTML = `
-                        <span>${file.name}</span>
-                        <a href="${file.downloadUrl}" target="_blank" class="btn-download">Télécharger</a>
-                    `;
-                    listDiv.appendChild(item);
-                });
-            } catch (e) {
-                listDiv.innerHTML = "Erreur lors du chargement. Vérifiez que le dossier Drive est public.";
-            }
-        }
+async function loadFiles() {
+  const res = await fetch(API_URL);
+  const files = await res.json();
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
-        function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            const status = document.getElementById('status');
-            const btn = document.getElementById('uploadBtn');
+  files.forEach(file => {
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="${file.url}" target="_blank">${file.name}</a>`;
+    list.appendChild(li);
+  });
+}
 
-            if (fileInput.files.length === 0) return alert("Sélectionnez un fichier !");
+async function upload() {
+  const file = document.getElementById("fileInput").files[0];
+  const reader = new FileReader();
 
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+  reader.onload = async function() {
+    const base64 = reader.result.split(",")[1];
 
-            status.innerHTML = "⏳ Conversion et envoi en cours...";
-            status.style.color = "orange";
-            btn.disabled = true;
+    await fetch(API_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: new URLSearchParams({
+        name: file.name,
+        type: file.type,
+        data: base64
+      })
+    });
 
-            reader.onload = async function(e) {
-                const base64Content = e.target.result.split(',')[1];
-                const payload = {
-                    base64: base64Content,
-                    fileName: file.name,
-                    mimeType: file.type
-                };
+    alert("Upload réussi !");
+    loadFiles();
+  };
 
-                try {
-                    // Utilisation de fetch POST vers Apps Script
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    status.innerHTML = "✅ Upload terminé avec succès !";
-                    status.style.color = "green";
-                    fileInput.value = ""; // Reset input
-                    loadFiles(); // Rafraîchir la liste
-                } catch (err) {
-                    status.innerHTML = "❌ Erreur lors de l'envoi.";
-                    status.style.color = "red";
-                } finally {
-                    btn.disabled = false;
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    </script>
+  reader.readAsDataURL(file);
+}
+
+loadFiles();
+</script>
+
 </body>
 </html>
