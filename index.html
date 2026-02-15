@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Drive Public</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; line-height: 1.6; }
+        .file-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; }
+        .upload-section { background: #f4f4f4; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        button { cursor: pointer; background: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 4px; }
+        button:disabled { background: #ccc; }
+    </style>
+</head>
+<body>
+
+    <h2>📤 Ajouter une photo</h2>
+    <div class="upload-section">
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()" id="uploadBtn">Uploader</button>
+        <p id="status"></p>
+    </div>
+
+    <h2>📂 Liste des photos</h2>
+    <button onclick="loadFiles()">Actualiser la liste</button>
+    <div id="fileList">Chargement...</div>
+
+    <script>
+        const SCRIPT_URL = "URL_DE_TON_SCRIPT_ICI";
+
+        // Charger les fichiers au démarrage
+        window.onload = loadFiles;
+
+        function loadFiles() {
+            const listDiv = document.getElementById('fileList');
+            listDiv.innerHTML = "Chargement en cours...";
+
+            fetch(SCRIPT_URL + "?action=list") // Note: Apps Script gère mieux via google.script.run mais ici on utilise fetch pour la simplicité
+            // Pour simplifier l'appel API REST avec Apps Script, on utilise souvent JSONP ou une astuce de redirection.
+            // Voici la méthode la plus fiable pour GitHub Pages :
+            fetchListViaScriptRun();
+        }
+
+        async function loadFiles() {
+            const response = await fetch(`${SCRIPT_URL}?action=list`); 
+            // Attention: Apps Script nécessite une gestion spécifique des redirections CORS
+            // Pour ce code, on suppose que vous utilisez l'URL d'exécution.
+        }
+
+        // Fonction d'upload simplifiée
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const status = document.getElementById('status');
+            if (fileInput.files.length === 0) return alert("Choisis un fichier");
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            status.innerText = "Téléchargement...";
+            document.getElementById('uploadBtn').disabled = true;
+
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                
+                // Envoi via formulaire caché ou fetch vers Apps Script
+                // Note : Apps Script "doPost" est nécessaire pour les gros volumes
+                // Ici on utilise une astuce simplifiée pour le tutoriel
+                alert("L'upload nécessite de configurer le doPost dans Apps Script. Voulez-vous que je développe cette partie spécifique ?");
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
