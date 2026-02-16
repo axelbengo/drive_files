@@ -10,16 +10,20 @@ button { padding: 8px; margin: 5px 0; }
 </head>
 <body>
 
-<h2>📁 Documents</h2>
+<div class="app">
+  <h2>📁 Documents</h2>
+  <div class="col1">
+    <h3>📁 choisir le fichier à uploader</h3>  
   
-<h3>📁 choisir le fichier à uploader</h3>  
-
-<input type="file" id="fileInput">
-<button onclick="upload()">Uploader</button>
-
-<h3>📁 liste des fichiers disponibles</h3>
-<ul id="list"></ul>
-
+    <input type="file" id="fileInput">
+    <button onclick="upload()">Uploader</button>
+  </div>  
+  <div class="col1">  
+  
+    <h3>📁 liste des fichiers disponibles</h3>
+    <ul id="list"></ul>
+  </div>
+</div>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwX1fl3Y4mJT9y2kWlsFrnqL6wbP_-X2soYLtmikPcHOTMRlW1oT5s4-oPx51amsAg8/exec";
 
