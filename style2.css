@@ -56,3 +56,8 @@ input{
         transform: translateY(0); /* Elle remonte à sa place */
     }
 }
+
+#div-list{
+  overflow-wrap: break-word; /* Force la coupure des mots longs */
+  word-break: break-all;     /* Optionnel : assure que même les très longs noms sans tirets se coupent */
+}
