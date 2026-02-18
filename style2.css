@@ -1,42 +1,58 @@
-
-body {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: repeating-radial-gradient(circle,#110808, #512626, #eabbbb, #e00101);
-    }
-
-img {
-    width: 100px;
-    animation: rotation 3s linear infinite;
-    cursor: pointer;
+body{
+  background-image: url("images/bliter.jpg");
+  background-size: 150%;
+  background-position: center;
+  background-repeat: repeat;
 }
 
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.app {
+  display: flex; /* Active le mode flexbox */
+  webkit-flex-direction: column;
+  gap: 2px;     /* Ajoute un espace entre les div */
+  flex-wrap: wrap;
+}
+
+.col1 {
+  flex: 1;       /* Optionnel : permet aux div de prendre la même largeur */
+  padding: 20px;
+  flex-shrink: 1;
+  min-width: 0;
+  opacity: 0;
+  transform: translateY(30px); /* Elle est 30px plus bas */
+  corner-shape: bevel;
+  background: linear-gradient(90deg,white, #040303, #b5011b, white, black);
+  background-size:400%, 400%;
+  animation: gradientAnimation 5s ease-in-out infinite, apparition 0.8s ease-out forwards;
+}
+
+@keyframes gradientAnimation{
+  0%{
+    background-position: 0% 50%;
+    
+  }
+  100%{
+    background-position: 100% 50%;
+  }
 }
 
 p{
-    color: #ffcc8e;
-    text-shadow: #040808;
+  align-self:center;
+  color: lightgoldenrodyellow
 }
 
-.paragraph{
-    opacity: 0;
-    transform: translateY(30px); /* Elle est 30px plus bas */
-    animation: show 1s ease forwards;
+h3{
+  color: lightgoldenrodyellow
 }
 
-@keyframes show {
+input{
+  color:white;
+}
+
+
+/* 2. Le scénario de l'animation */
+@keyframes apparition {
     to {
-        opacity:1;
-        transform: translateY(0);
-    } 
+        opacity: 1;
+        transform: translateY(0); /* Elle remonte à sa place */
+    }
 }
