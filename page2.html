@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Drive Public App</title>
+<link rel="stylesheet" href="style2.css">
+<style>
+body { font-family: Arial; max-width: 600px; margin: auto; }
+button { padding: 10px; margin: 5px 0; }
+</style>
+</head>
+<body>
+   <p>ici il vous est possible de télécharger les fichiers disponibles</p>
+   <p>ou d'en rajouter d'autres</p>
+
+  <div class="app">
+    <div class="col1">
+      <h3>📁 choisir le fichier à uploader</h3>  
+    
+      <input type="file" id="fileInput">
+      <button onclick="upload()">Uploader</button>
+    </div>  
+    <div class="col1">  
+    
+      <h3>📁 liste des fichiers disponibles</h3>
+      <ul id="list"></ul>
+    </div>
+</div>
+<script>
