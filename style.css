@@ -1,0 +1,42 @@
+
+body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: repeating-radial-gradient(circle,#110808, #512626, #eabbbb, #e00101);
+    }
+
+img {
+    width: 100px;
+    animation: rotation 3s linear infinite;
+    cursor: pointer;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+p{
+    color: #ffcc8e;
+    text-shadow: #040808;
+}
+
+.paragraph{
+    opacity: 0;
+    transform: translateY(30px); /* Elle est 30px plus bas */
+    animation: show 1s ease forwards;
+}
+
+@keyframes show {
+    to {
+        opacity:1;
+        transform: translateY(0);
+    } 
+}
