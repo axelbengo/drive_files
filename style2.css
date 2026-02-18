@@ -16,7 +16,7 @@ body {
   flex: 1;       /* Optionnel : permet aux div de prendre la même largeur */
   padding: 20px;
   flex-shrink: 1;
-  min-width: 500;
+  min-width: 500px;
   opacity: 0;
   transform: translateY(30px); /* Elle est 30px plus bas */
   corner-shape: bevel;
